@@ -49,9 +49,38 @@ public class CoinTest extends FluentTest {
   @Test
   public void coinCount_givesCoins_true() {
     Coin coin = new Coin();
-    String expValue = "3 quarters, 1 dimes, 0 nickels, 2 pennies.";
-    assertEquals(expValue, coin.coinCount(87));
+    String expValue = "You should receive 3 quarters, 2 dimes, 0 nickels, 2 pennies.";
+    assertEquals(expValue, coin.coinCount("97"));
   }
+
+  @Test
+  public void coinCount_singularCoin_true() {
+    Coin coin = new Coin();
+    String expValue = "You should receive 3 quarters, 1 dime, 0 nickels, 2 pennies.";
+    assertEquals(expValue, coin.coinCount("87"));
+  }
+
+  @Test
+  public void rootTest() {
+    goTo("http://localhost:4567/");
+    assertThat(pageSource()).contains("Change Calculator");
+  }
+
+  @Test
+  public void results_displaysCorrectCoins() {
+   goTo("http://localhost:4567/");
+   fill("#cents").with("87");
+   submit(".btn");
+   assertThat(pageSource()).contains("3 quarters, 1 dime, 0 nickels, 2 pennies.");
+ }
+
+ @Test
+ public void results_displaysErrorOnBadInput() {
+  goTo("http://localhost:4567/");
+  fill("#cents").with("banana");
+  submit(".btn");
+  assertThat(pageSource()).contains("That is not a valid number.");
+}
 
 
 }
